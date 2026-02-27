@@ -12,7 +12,7 @@ local portraitNormalButtonSize = {
 };
 
 // 标准26键布局
-local getRows(isForTempUse) = [
+local getRows(isAlphabetic, isForTempUse) = [
   [
     buttons.qButton,
     buttons.wButton,
@@ -51,7 +51,9 @@ local getRows(isForTempUse) = [
     commonButtons.numericButton,
     commonButtons.commaButton,
     commonButtons.spaceButton,
-    if isForTempUse then commonButtons.goBackButton else commonButtons.alphabeticButton,
+    if isAlphabetic then commonButtons.pinyinButton
+    else if isForTempUse then commonButtons.goBackButton
+    else commonButtons.alphabeticButton,
     commonButtons.enterButton,
   ],
 ];
@@ -78,10 +80,21 @@ local getAlphabeticButtonSize(name) =
     portraitNormalButtonSize
   );
 
+// 英文键盘下，对按键的 params 进行处理
+// 1. 将 character 替换为 symbol
+//    处理方式为 params = repalceCharacterToSymbolRecursive(params)
+// 2. 将 params 中的 whenAlphabetic 合并到 params
+//    处理方式为 params = std.objectRemoveKey(params + std.get(params, 'whenAlphabetic', default={}), 'whenAlphabetic') 的内容
+local processButtonParams(isAlphabetic, params) =
+  if isAlphabetic then
+    local paramsWithSymbol = utils.repalceCharacterToSymbolRecursive(params);
+    utils.deepMerge(paramsWithSymbol, std.get(paramsWithSymbol, 'whenAlphabetic', default={}))
+  else
+    params;
 
-local newKeyLayout(isDark=false, isPortrait=true, isForTempUse=false) =
+local newKeyLayout(isDark=false, isPortrait=true, isAlphabetic=false, isForTempUse=false) =
   local rowHeight = if isPortrait then commonButtons.rowHeight.portrait else commonButtons.rowHeight.landscape;
-  local rows = getRows(isForTempUse);
+  local rows = getRows(isAlphabetic, isForTempUse);
   {
     keyboardHeight: rowHeight * std.length(rows),
     keyboardStyle: utils.newBackgroundStyle(style=basicStyle.keyboardBackgroundStyleName),
@@ -94,9 +107,10 @@ local newKeyLayout(isDark=false, isPortrait=true, isForTempUse=false) =
       basicStyle.newAlphabeticButton(
         button.name,
         isDark,
-        getAlphabeticButtonSize(button.name) + button.params + basicStyle.hintStyleSize + basicStyle.textCenterWhenShowSwipeText +
+        getAlphabeticButtonSize(button.name) +
+        processButtonParams(isAlphabetic, button.params) + basicStyle.hintStyleSize + basicStyle.textCenterWhenShowSwipeText +
         (
-          if settings.uppercaseForChinese then
+          if !isAlphabetic && settings.uppercaseForChinese then
             basicStyle.newAlphabeticButtonUppercaseForegroundStyle(isDark, button.params) + basicStyle.getKeyboardActionText(button.params.uppercased)
           else {}
         )
@@ -118,7 +132,7 @@ local newKeyLayout(isDark=false, isPortrait=true, isForTempUse=false) =
           { width: '151/168.75', alignment: 'left' },
       }
     )
-    + commonButtons.shiftButton.params
+    + processButtonParams(isAlphabetic, commonButtons.shiftButton.params)
   )
 
   + basicStyle.newSystemButton(
@@ -137,7 +151,7 @@ local newKeyLayout(isDark=false, isPortrait=true, isForTempUse=false) =
           { width: '151/168.75', alignment: 'right' },
       }
     )
-    + commonButtons.backspaceButton.params,
+    + processButtonParams(isAlphabetic, commonButtons.backspaceButton.params),
   )
 
   // Fourth Row
@@ -145,27 +159,34 @@ local newKeyLayout(isDark=false, isPortrait=true, isForTempUse=false) =
     commonButtons.numericButton.name,
     isDark,
     { size: { width: '225/1125' } }
-    + commonButtons.numericButton.params
+    + processButtonParams(isAlphabetic, commonButtons.numericButton.params)
   )
 
   + basicStyle.newAlphabeticButton(
     commonButtons.commaButton.name,
     isDark,
-    portraitNormalButtonSize + commonButtons.commaButton.params + basicStyle.hintStyleSize
+    portraitNormalButtonSize + processButtonParams(isAlphabetic, commonButtons.commaButton.params) + basicStyle.hintStyleSize
   )
   + basicStyle.newAlphabeticButton(
     commonButtons.spaceButton.name,
     isDark,
     {
       foregroundStyleName: basicStyle.spaceButtonForegroundStyle,
-      foregroundStyle: basicStyle.newSpaceButtonRimeSchemaForegroundStyle('$rimeSchemaName', isDark),
+      foregroundStyle: basicStyle.newSpaceButtonRimeSchemaForegroundStyle(if isAlphabetic then 'English' else '$rimeSchemaName', isDark),
     }
-    + commonButtons.spaceButton.params,
+    + processButtonParams(isAlphabetic, commonButtons.spaceButton.params),
     needHint=false,
   )
   +
   (
-    if isForTempUse then
+    if isAlphabetic then
+      basicStyle.newSystemButton(
+        commonButtons.pinyinButton.name,
+        isDark,
+        portraitNormalButtonSize
+        + processButtonParams(isAlphabetic, commonButtons.pinyinButton.params)
+      )
+    else if isForTempUse then
       basicStyle.newSystemButton(
         commonButtons.goBackButton.name,
         isDark,
@@ -185,7 +206,7 @@ local newKeyLayout(isDark=false, isPortrait=true, isForTempUse=false) =
     isDark,
     {
       size: { width: '250/1125' },
-    } + commonButtons.enterButton.params
+    } + processButtonParams(isAlphabetic, commonButtons.enterButton.params)
   )
 ;
 
@@ -204,8 +225,8 @@ else
   // isForTempUse 表示这个26键布局是临时使用的，比如当前是拼音17键布局，但是想使用雾凇方案中的 V 模式
   // 只在非26键布局下额外生成一个26键布局，action 使用 character，把动作发给 Rime 处理
   // 和主键盘的区别在于“中英切换键”改为“返回”键
-  new(isDark, isPortrait, isForTempUse=false):
-    local insets = if isPortrait then backgroundInsets.portrait else backgroundInsets.landscape;
+  new(isDark, isPortrait, isAlphabetic=false, isForTempUse=false):
+	local insets = if isPortrait then backgroundInsets.portrait else backgroundInsets.landscape;
 
     local extraParams = {
       insets: insets,
@@ -221,7 +242,7 @@ else
     + basicStyle.newLongPressSymbolsBackgroundStyle(isDark, extraParams)
     + basicStyle.newLongPressSymbolsSelectedBackgroundStyle(isDark, extraParams)
     + basicStyle.newButtonAnimation()
-    + newKeyLayout(isDark, isPortrait, isForTempUse)
+    + newKeyLayout(isDark, isPortrait, isAlphabetic, isForTempUse)
     // Notifications
     + basicStyle.rimeSchemaChangedNotification
     + basicStyle.returnKeyTypeChangedNotification,
