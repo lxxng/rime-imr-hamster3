@@ -108,9 +108,9 @@
 
   # 分词键，用于输入方案中分词使用
   segmentAction:
-    { character: '`'},
+    # { character: '`'},
     # 'tab',
-    # { character: "'"},
+    { character: "'"},
 
 
   # Rime 方案中的快符
