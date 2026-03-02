@@ -75,7 +75,7 @@ aButton: {
 
 
 ### longPress 长按列表
-`longPress` 是按键长按菜单的配置，它是一个列表，可以添加多个菜单项。如果需要指定初始选中项，可以在希望的菜单项中添加 `selected: true`，如果没有指定 `selected: true`，则默认选中第一个菜单项。例如:
+`longPress` 是按键长按菜单的配置，它是一个列表，可以添加多个菜单项。如果需要指定初始选中项，可以在希望的菜单项中添加 `selected: true`，如果没有指定 `selected: true`，则默认选择中间（奇数）或中间靠右（偶数）的菜单项。例如:
 ```jsonnet
 pButton: {
   name: 'pButton',
