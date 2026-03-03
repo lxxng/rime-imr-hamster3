@@ -233,17 +233,42 @@ local slideButtons =
   for buttonCode in settings.toolbarSlideButtons
 ];
 
-local toolbarKeyboardLayout = [
+local needSlideToolbar(slideButtons, slideButtonsMaxCount) =
+  std.length(slideButtons) > slideButtonsMaxCount;
+
+local toolbarKeyboardLayout(slideButtons, slideButtonsMaxCount) = [
   {
     HStack: {
       subviews: [
         { Cell: keyboardParams.toolbarButton.toolbarMenuButton.name, },
-        { Cell: basicStyle.toolbarSlideButtonsName, },
+      ] + (
+        if needSlideToolbar(slideButtons, slideButtonsMaxCount) then
+          [{ Cell: basicStyle.toolbarSlideButtonsName, }]
+        else
+          [{ Cell: '' } for i in std.range(1, slideButtonsMaxCount - std.length(slideButtons))] +
+          [{ Cell: button.name, } for button in slideButtons]
+      ) + [
         { Cell: keyboardParams.toolbarButton.toolbarDismissButton.name, },
       ],
     },
   },
 ];
+
+
+local newSlideAreaButtons(slideButtons, slideButtonsMaxCount, isDark) =
+  if needSlideToolbar(slideButtons, slideButtonsMaxCount) then
+    basicStyle.newToolbarSlideButtons(slideButtons, slideButtonsMaxCount, isDark)
+  else
+    std.foldl(
+      function(acc, button) acc +
+        basicStyle.newToolbarButton(
+          button.name,
+          isDark,
+          button.params
+        ),
+      slideButtons,
+      {}
+    );
 
 local newButtons(isDark=false) =
   basicStyle.newToolbarButton(
@@ -266,7 +291,7 @@ local newToolbar(isDark=false, isPortrait=false, params={}) =
              insets: keyboardParams.toolbar.insets,
            }
            + utils.newBackgroundStyle(style=toolbarBackgroundStyleName),
-    toolbarLayout: toolbarKeyboardLayout,
+    toolbarLayout: toolbarKeyboardLayout(slideButtons, slideButtonsMaxCount),
     horizontalCandidatesStyle:
       utils.extractProperties(keyboardParams.horizontalCandidateStyle + params, ['insets'])
       {
@@ -287,7 +312,7 @@ local newToolbar(isDark=false, isPortrait=false, params={}) =
     ],
   }
   + newButtons(isDark)
-  + basicStyle.newToolbarSlideButtons(slideButtons, slideButtonsMaxCount, isDark)
+  + newSlideAreaButtons(slideButtons, slideButtonsMaxCount, isDark)
   + newHorizontalCandidatesCollectionView(isDark)
   + newExpandButton(isDark)
   + newVerticalCandidateCollectionStyle(isDark)

@@ -322,6 +322,7 @@ local settings = import '../Settings.libsonnet';
       name: 'toolbarMoveCursorLeftButton',
       params: {
         action: 'moveCursorBackward',
+        repeatAction: 'moveCursorBackward',
         systemImageName: 'arrowshape.left',
         text: '左移',
       },
@@ -330,6 +331,7 @@ local settings = import '../Settings.libsonnet';
       name: 'toolbarMoveCursorRightButton',
       params: {
         action: 'moveCursorForward',
+        repeatAction: 'moveCursorForward',
         systemImageName: 'arrowshape.right',
         text: '右移',
       },

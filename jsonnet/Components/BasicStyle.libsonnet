@@ -385,27 +385,25 @@ local newToolbarButtonForegroundStyle(isDark=false, params={}) =
 
 local toolbarSlideButtonsName = 'toolbarSlideButtons';
 local newToolbarSlideButtons(buttons, slideButtonsMaxCount, isDark=false) =
-  local rightToLeft = std.length(buttons) < slideButtonsMaxCount;
+  assert std.length(buttons) > slideButtonsMaxCount : '滑动按钮数量必须大于 slideButtonsMaxCount';
   {
     [toolbarSlideButtonsName]: {
       type: 'horizontalSymbols',
       size: { width: '%d/%d' % [slideButtonsMaxCount, slideButtonsMaxCount + 2] },
       maxColumns: slideButtonsMaxCount,
-      contentRightToLeft: rightToLeft,
-      insets: { left: 3, right: 3 },
+      contentRightToLeft: false,
       // backgroundStyle: 'toolbarcollectionCellBackgroundStyle',
       dataSource: 'horizontalSymbolsToolbarButtonsDataSource',
       // 用于定义符号列表中每个符号的样式(仅支持文本)
       cellStyle: 'toolbarCollectionCellStyle',
     },
     horizontalSymbolsToolbarButtonsDataSource:
-      local adjustOrderButtons = if rightToLeft then std.reverse(buttons) else buttons;
       [
         {
           label: button.name,
           action: button.params.action,
           styleName: button.name + 'Style',
-        } for button in adjustOrderButtons
+        } for button in buttons
       ],
     toolbarCollectionCellStyle: utils.newBackgroundStyle(style=keyboardBackgroundStyleName)
       + utils.newForegroundStyle(style=keyboardBackgroundStyleName),
