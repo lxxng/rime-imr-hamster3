@@ -433,6 +433,9 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
   isDark: isDark,
   params: params,
 
+  showSwipeUpText: true,
+  showSwipeDownText: true,
+
   [name]: {}, // 保存按钮相关信息
   reference: {},   // 按钮内的相关引用定义
   globalNames: [], // 引用全局名称列表
@@ -490,12 +493,12 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
           + utils.newBackgroundStyle(style=alphabeticHintBackgroundStyleName)
           + utils.newForegroundStyle(style=hintForegroundStyleName)
           + (
-            if std.objectHas(param, 'swipeUp') then
+            if std.objectHas(param, 'swipeUp') && root.showSwipeUpText then
               utils.newForegroundStyle(styleName='swipeUpForegroundStyle', style=swipeUpHintForegroundStyleName)
             else {}
           )
           + (
-            if std.objectHas(param, 'swipeDown') then
+            if std.objectHas(param, 'swipeDown') && root.showSwipeDownText then
               utils.newForegroundStyle(styleName='swipeDownForegroundStyle', style=swipeDownHintForegroundStyleName)
             else {}
           ),
@@ -532,10 +535,13 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
   AddSwipeUp(showSwipeText):
     local hasSwipeUpParams = std.objectHas(root.params, 'swipeUp');
     if !hasSwipeUpParams then
-      root
+      root {
+        showSwipeUpText: showSwipeText,
+      }
     else
       local swipeUpParams = if hasSwipeUpParams then root.params.swipeUp else {};
       root {
+        showSwipeUpText: showSwipeText,
         [root.name]+: {
             [if std.objectHas(swipeUpParams, 'action') then 'swipeUpAction']: swipeUpParams.action,
             [if showSwipeText then 'foregroundStyle']+: [generateSwipeForegroundStyleName(root.name, 'Up')],
@@ -549,10 +555,13 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
   AddSwipeDown(showSwipeText):
     local hasSwipeDownParams = std.objectHas(root.params, 'swipeDown');
     if !hasSwipeDownParams then
-      root
+      root {
+        showSwipeDownText: showSwipeText,
+      }
     else
       local swipeDownParams = if hasSwipeDownParams then root.params.swipeDown else {};
       root {
+        showSwipeDownText: showSwipeText,
         [root.name]+: {
             [if std.objectHas(swipeDownParams, 'action') then 'swipeDownAction']: swipeDownParams.action,
             [if showSwipeText then 'foregroundStyle']+: [generateSwipeForegroundStyleName(root.name, 'Down')],
@@ -681,11 +690,11 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
           foregroundStyle: [
             root.name + 'PreeditChangedForegroundStyle',
           ] + (
-            if std.objectHas(preeditChangedParams, 'swipeUp') then
+            if std.objectHas(preeditChangedParams, 'swipeUp') && root.showSwipeUpText then
               [generateSwipeForegroundStyleName(root.name, 'Up', 'PreeditChanged')]
             else []
           ) + (
-            if std.objectHas(preeditChangedParams, 'swipeDown') then
+            if std.objectHas(preeditChangedParams, 'swipeDown') && root.showSwipeDownText then
               [generateSwipeForegroundStyleName(root.name, 'Down', 'PreeditChanged')]
             else []
           ),
@@ -706,8 +715,8 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
           root.CreateHintStyleReference(root.name + 'PreeditChangedHintStyle', preeditChangedParams)
         else {}
       ) + {
-        [if std.objectHas(preeditChangedParams, 'swipeUp') then generateSwipeForegroundStyleName(root.name, 'Up', 'PreeditChanged')]: newAlphabeticButtonAlternativeForegroundStyle(root.isDark, { center: swipeUpTextCenter }, preeditChangedParams.swipeUp),
-        [if std.objectHas(preeditChangedParams, 'swipeDown') then generateSwipeForegroundStyleName(root.name, 'Down', 'PreeditChanged')]: newAlphabeticButtonAlternativeForegroundStyle(root.isDark, { center: swipeDownTextCenter }, preeditChangedParams.swipeDown),
+        [if std.objectHas(preeditChangedParams, 'swipeUp') && root.showSwipeUpText then generateSwipeForegroundStyleName(root.name, 'Up', 'PreeditChanged')]: newAlphabeticButtonAlternativeForegroundStyle(root.isDark, { center: swipeUpTextCenter }, preeditChangedParams.swipeUp),
+        [if std.objectHas(preeditChangedParams, 'swipeDown') && root.showSwipeDownText then generateSwipeForegroundStyleName(root.name, 'Down', 'PreeditChanged')]: newAlphabeticButtonAlternativeForegroundStyle(root.isDark, { center: swipeDownTextCenter }, preeditChangedParams.swipeDown),
       },
     },
 
@@ -740,8 +749,8 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
             oldForegroundStyle,
             {
               [root.name + 'ForegroundStyle']: root.name + 'KeyboardAction'+i+'ForegroundStyle',
-              [if std.objectHas(keyboardActionParams[i], 'swipeUp') then generateSwipeForegroundStyleName(root.name, 'Up')]: generateSwipeForegroundStyleName(root.name, 'Up', 'KeyboardAction'+i),
-              [if std.objectHas(keyboardActionParams[i], 'swipeDown') then generateSwipeForegroundStyleName(root.name, 'Down')]: generateSwipeForegroundStyleName(root.name, 'Down', 'KeyboardAction'+i),
+              [if std.objectHas(keyboardActionParams[i], 'swipeUp') && root.showSwipeUpText then generateSwipeForegroundStyleName(root.name, 'Up')]: generateSwipeForegroundStyleName(root.name, 'Up', 'KeyboardAction'+i),
+              [if std.objectHas(keyboardActionParams[i], 'swipeDown') && root.showSwipeDownText then generateSwipeForegroundStyleName(root.name, 'Down')]: generateSwipeForegroundStyleName(root.name, 'Down', 'KeyboardAction'+i),
             }
           ),
           [if std.objectHas(keyboardActionParams[i], 'swipeUp') && std.objectHas(keyboardActionParams[i].swipeUp, 'action') then 'swipeUpAction']: keyboardActionParams[i].swipeUp.action,
@@ -798,8 +807,8 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
         oldForegroundStyle,
         {
           [root.name + 'ForegroundStyle']: utils.rimeOptionChangedForegroundStyleName(root.name, rimeOptionName, rimeOptionValue),
-          [if std.objectHas(rimeOptionParams, 'swipeUp') then generateSwipeForegroundStyleName(root.name, 'Up')]: generateSwipeForegroundStyleName(root.name, 'Up', rimeOptionStr),
-          [if std.objectHas(rimeOptionParams, 'swipeDown') then generateSwipeForegroundStyleName(root.name, 'Down')]: generateSwipeForegroundStyleName(root.name, 'Down', rimeOptionStr),
+          [if std.objectHas(rimeOptionParams, 'swipeUp') && root.showSwipeUpText then generateSwipeForegroundStyleName(root.name, 'Up')]: generateSwipeForegroundStyleName(root.name, 'Up', rimeOptionStr),
+          [if std.objectHas(rimeOptionParams, 'swipeDown') && root.showSwipeDownText then generateSwipeForegroundStyleName(root.name, 'Down')]: generateSwipeForegroundStyleName(root.name, 'Down', rimeOptionStr),
         }
       );
       local needUpdateHintStyle = std.objectHas(root[root.name], 'hintStyle');
@@ -835,8 +844,8 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
           [utils.rimeOptionChangedForegroundStyleName(root.name, rimeOptionName, rimeOptionValue)]: newAlphabeticButtonForegroundStyle(root.isDark, root.params, rimeOptionParams),
         }
         + {
-          [if std.objectHas(rimeOptionParams, 'swipeUp') then generateSwipeForegroundStyleName(root.name, 'Up', rimeOptionStr)]: newAlphabeticButtonAlternativeForegroundStyle(root.isDark, { center: swipeUpTextCenter }, rimeOptionParams.swipeUp),
-          [if std.objectHas(rimeOptionParams, 'swipeDown') then generateSwipeForegroundStyleName(root.name, 'Down', rimeOptionStr)]: newAlphabeticButtonAlternativeForegroundStyle(root.isDark, { center: swipeDownTextCenter }, rimeOptionParams.swipeDown),
+          [if std.objectHas(rimeOptionParams, 'swipeUp') && root.showSwipeUpText then generateSwipeForegroundStyleName(root.name, 'Up', rimeOptionStr)]: newAlphabeticButtonAlternativeForegroundStyle(root.isDark, { center: swipeUpTextCenter }, rimeOptionParams.swipeUp),
+          [if std.objectHas(rimeOptionParams, 'swipeDown') && root.showSwipeDownText then generateSwipeForegroundStyleName(root.name, 'Down', rimeOptionStr)]: newAlphabeticButtonAlternativeForegroundStyle(root.isDark, { center: swipeDownTextCenter }, rimeOptionParams.swipeDown),
         } + (
           if needUpdateHintStyle then
             root.CreateHintStyleReference(root.name + rimeOptionStr + 'HintStyle', root.params + rimeOptionParams)
