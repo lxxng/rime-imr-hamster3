@@ -669,9 +669,15 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
         ],
       },
       reference+: {
-        [root.name + 'PreeditChangedNotification']: {
+        [root.name + 'PreeditChangedNotification']: std.prune({
           notificationType: 'preeditChanged',
-          backgroundStyle: if std.objectHas(preeditChangedParams, 'backgroundStyle') then preeditChangedParams.backgroundStyle else root[root.name].backgroundStyle,
+          backgroundStyle:
+            if std.objectHas(preeditChangedParams, 'backgroundStyle') then
+              preeditChangedParams.backgroundStyle
+            else if std.objectHas(root[root.name], 'backgroundStyle') then
+              root[root.name].backgroundStyle
+            else
+              null,
           foregroundStyle: [
             root.name + 'PreeditChangedForegroundStyle',
           ] + (
@@ -685,7 +691,7 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
           ),
           [if std.objectHas(preeditChangedParams, 'swipeUp') && std.objectHas(preeditChangedParams.swipeUp, 'action') then 'swipeUpAction']: preeditChangedParams.swipeUp.action,
           [if std.objectHas(preeditChangedParams, 'swipeDown') && std.objectHas(preeditChangedParams.swipeDown, 'action') then 'swipeDownAction']: preeditChangedParams.swipeDown.action,
-        }
+        })
         + utils.extractProperties(preeditChangedParams, ['action'])
         + utils.extractProperties(root.params, ['bounds']) + (
           if needUpdateHintStyle then
@@ -721,9 +727,15 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
         ]
       },
       reference+: {
-        [root.name + 'KeyboardAction'+i+'Notification']: {
+        [root.name + 'KeyboardAction'+i+'Notification']: std.prune({
           notificationType: 'keyboardAction',
-          backgroundStyle: if std.objectHas(keyboardActionParams[i], 'backgroundStyle') then keyboardActionParams[i].backgroundStyle else root[root.name].backgroundStyle,
+          backgroundStyle:
+            if std.objectHas(keyboardActionParams[i], 'backgroundStyle') then
+              keyboardActionParams[i].backgroundStyle
+            else if std.objectHas(root[root.name], 'backgroundStyle') then
+              root[root.name].backgroundStyle
+            else
+              null,
           foregroundStyle: replaceGivenPairs(
             oldForegroundStyle,
             {
@@ -734,7 +746,7 @@ local newButton(name, type='alphabetic', isDark=false, params={}) =
           ),
           [if std.objectHas(keyboardActionParams[i], 'swipeUp') && std.objectHas(keyboardActionParams[i].swipeUp, 'action') then 'swipeUpAction']: keyboardActionParams[i].swipeUp.action,
           [if std.objectHas(keyboardActionParams[i], 'swipeDown') && std.objectHas(keyboardActionParams[i].swipeDown, 'action') then 'swipeDownAction']: keyboardActionParams[i].swipeDown.action,
-        } + utils.extractProperties(keyboardActionParams[i], ['action', 'lockedNotificationMatchState', 'notificationKeyboardAction'])
+        }) + utils.extractProperties(keyboardActionParams[i], ['action', 'lockedNotificationMatchState', 'notificationKeyboardAction'])
         + utils.extractProperties(root.params, ['bounds'])
         + (
           if needUpdateHintStyle then
