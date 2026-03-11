@@ -1,5 +1,10 @@
 local settings = import '../Settings.libsonnet';
 
+// 本文件中的颜色使用 #rrggbb 或 #rrggbbaa 格式的十六进制字符串表示
+// 其中 rr、gg、bb 分别表示红、绿、蓝三种颜色的强度，范围是 00 到 FF（十六进制）
+// aa 表示 alpha 通道的值，范围也是 00 到 FF，00 表示完全透明，FF 表示完全不透明（此时可以省略 alpha 通道）
+// 注意：aa 为 00 时颜色完全透明，会使按键不可点击，建议至少使用 01
+
 // 标签颜色常量定义
 local labelColor = {
   primary: {
@@ -26,7 +31,7 @@ local separatorColor = {
   dark: '#38383A',
 };
 
-// 键盘背景色 03 表示 0.01 的透明度
+// 键盘背景色
 local keyboardBackgroundColor = {
   light: '#ffffff03',
   dark: '#00000003',
