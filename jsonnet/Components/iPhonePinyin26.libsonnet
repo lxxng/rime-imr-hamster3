@@ -159,6 +159,13 @@ local newKeyLayout(isDark=false, isPortrait=true, keyboardType=KeyboardType.Chin
     isDark,
     { size: { width: '225/1125' } }
     + utils.processButtonParams(isAlphabetic, commonButtons.numericButton.params)
+    + (
+	  // 对于英文键盘，如果数字键盘是 row 形式，那么切到 numericRowEn 键盘
+	  // numericRowEn 键盘经过特殊处理，上面的符号都是用 symbol 直接上屏的
+      if isAlphabetic && settings.numericLayout == 'row' then
+        { action: { keyboardType: 'numericRowEn' } }
+      else {}
+    )
   )
 
   + basicStyle.newAlphabeticButton(
