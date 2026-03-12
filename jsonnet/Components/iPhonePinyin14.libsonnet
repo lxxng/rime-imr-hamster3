@@ -7,46 +7,62 @@ local preedit = import 'Preedit.libsonnet';
 local toolbar = import 'Toolbar.libsonnet';
 local utils = import 'Utils.libsonnet';
 
-// 标准26键布局
-local rows = [
-  [
-    buttons.qButton,
-    buttons.eButton,
-    buttons.tButton,
-    buttons.uButton,
-    buttons.oButton,
+local keyboardLayout = {
+  keyboardLayout: [
+    {
+      HStack: {
+        subviews: [
+          { Cell: buttons.qButton.name },
+          { Cell: buttons.eButton.name },
+          { Cell: buttons.tButton.name },
+          { Cell: buttons.uButton.name },
+          { Cell: buttons.oButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: buttons.aButton.name },
+          { Cell: buttons.dButton.name },
+          { Cell: buttons.gButton.name },
+          { Cell: buttons.jButton.name },
+          { Cell: buttons.lButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: commonButtons.shiftButton.name },
+          { Cell: buttons.zButton.name },
+          { Cell: buttons.cButton.name },
+          { Cell: buttons.bButton.name },
+          { Cell: buttons.mButton.name },
+          { Cell: commonButtons.backspaceButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: commonButtons.numericButton.name },
+          { Cell: commonButtons.commaButton.name },
+          { Cell: commonButtons.spaceButton.name },
+          { Cell: commonButtons.alphabeticButton.name },
+          { Cell: commonButtons.enterButton.name },
+        ],
+      },
+    },
   ],
-  [
-    buttons.aButton,
-    buttons.dButton,
-    buttons.gButton,
-    buttons.jButton,
-    buttons.lButton,
-  ],
-  [
-    commonButtons.shiftButton,
-    buttons.zButton,
-    buttons.cButton,
-    buttons.bButton,
-    buttons.mButton,
-    commonButtons.backspaceButton,
-  ],
-  [
-    commonButtons.numericButton,
-    commonButtons.commaButton,
-    commonButtons.spaceButton,
-    commonButtons.alphabeticButton,
-    commonButtons.enterButton,
-  ],
-];
-
+};
 
 local newKeyLayout(isDark=false, isPortrait=true) =
   {
     keyboardHeight: if isPortrait then commonButtons.keyboardHeight.portrait else commonButtons.keyboardHeight.landscape,
     keyboardStyle: utils.newBackgroundStyle(style=basicStyle.keyboardBackgroundStyleName),
   }
-  + utils.newRowKeyboardLayout(rows)
+  + keyboardLayout
 
   // letter Buttons
   + std.foldl(function(acc, button)

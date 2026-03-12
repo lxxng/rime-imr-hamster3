@@ -188,22 +188,6 @@ local newForegroundStyle(styleName='foregroundStyle', style) = { [styleName]: st
 
 local newAnimation(animation) = { animation: animation };
 
-local newRowKeyboardLayout(rows) = {
-  keyboardLayout: [
-    {
-      HStack: {
-        subviews: [
-          {
-            Cell: button.name,
-          }
-          for button in row
-        ],
-      },
-    }
-    for row in rows
-  ],
-};
-
 // rime option 变化时生成 notification 及 foreground style
 local rimeOptionChangedForegroundStyleName(name, rimeOptionName, value) =
   name + rimeOptionName + (if value then 'On' else 'Off') + 'ForegroundStyle';
@@ -317,7 +301,6 @@ local processButtonParams(isAlphabetic, params) =
   newBackgroundStyle: newBackgroundStyle,
   newForegroundStyle: newForegroundStyle,
   newAnimation: newAnimation,
-  newRowKeyboardLayout: newRowKeyboardLayout,
   rimeOptionChangedForegroundStyleName: rimeOptionChangedForegroundStyleName,
   rimeOptionChangedNotificationName: rimeOptionChangedNotificationName,
   newRimeOptionChangedNotification: newRimeOptionChangedNotification,

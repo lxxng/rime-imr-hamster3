@@ -11,66 +11,87 @@ local portraitNormalButtonSize = {
   size: { width: '3/33' },
 };
 
-// 注音佈局
-local getRows = [
-  [
-    buttons.bpmfOneButton,
-    buttons.bpmfTwoButton,
-    buttons.bpmfThreeButton,
-    buttons.bpmfFourButton,
-    buttons.bpmfFiveButton,
-    buttons.bpmfSixButton,
-    buttons.bpmfSevenButton,
-    buttons.bpmfEightButton,
-    buttons.bpmfNineButton,
-    buttons.bpmfZeroButton,
-    buttons.bpmfDashButton,
+local keyboardLayout = {
+  keyboardLayout: [
+    {
+      HStack: {
+        subviews: [
+          { Cell: buttons.bpmfOneButton.name },
+          { Cell: buttons.bpmfTwoButton.name },
+          { Cell: buttons.bpmfThreeButton.name },
+          { Cell: buttons.bpmfFourButton.name },
+          { Cell: buttons.bpmfFiveButton.name },
+          { Cell: buttons.bpmfSixButton.name },
+          { Cell: buttons.bpmfSevenButton.name },
+          { Cell: buttons.bpmfEightButton.name },
+          { Cell: buttons.bpmfNineButton.name },
+          { Cell: buttons.bpmfZeroButton.name },
+          { Cell: buttons.bpmfDashButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: buttons.qButton.name },
+          { Cell: buttons.wButton.name },
+          { Cell: buttons.eButton.name },
+          { Cell: buttons.rButton.name },
+          { Cell: buttons.tButton.name },
+          { Cell: buttons.yButton.name },
+          { Cell: buttons.uButton.name },
+          { Cell: buttons.iButton.name },
+          { Cell: buttons.oButton.name },
+          { Cell: buttons.pButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: buttons.aButton.name },
+          { Cell: buttons.sButton.name },
+          { Cell: buttons.dButton.name },
+          { Cell: buttons.fButton.name },
+          { Cell: buttons.gButton.name },
+          { Cell: buttons.hButton.name },
+          { Cell: buttons.jButton.name },
+          { Cell: buttons.kButton.name },
+          { Cell: buttons.lButton.name },
+          { Cell: buttons.bpmfSemicolonButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: buttons.zButton.name },
+          { Cell: buttons.xButton.name },
+          { Cell: buttons.cButton.name },
+          { Cell: buttons.vButton.name },
+          { Cell: buttons.bButton.name },
+          { Cell: buttons.nButton.name },
+          { Cell: buttons.mButton.name },
+          { Cell: buttons.bpmfCommaButton.name },
+          { Cell: buttons.bpmfPeriodButton.name },
+          { Cell: buttons.bpmfSlashButton.name },
+          { Cell: commonButtons.backspaceButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: commonButtons.numericButton.name },
+          { Cell: buttons.commaButton.name },
+          { Cell: buttons.spaceButton.name },
+          { Cell: commonButtons.alphabeticButton.name },
+          { Cell: buttons.enterButton.name },
+        ],
+      },
+    },
   ],
-  [
-    buttons.qButton,
-    buttons.wButton,
-    buttons.eButton,
-    buttons.rButton,
-    buttons.tButton,
-    buttons.yButton,
-    buttons.uButton,
-    buttons.iButton,
-    buttons.oButton,
-    buttons.pButton,
-  ],
-  [
-    buttons.aButton,
-    buttons.sButton,
-    buttons.dButton,
-    buttons.fButton,
-    buttons.gButton,
-    buttons.hButton,
-    buttons.jButton,
-    buttons.kButton,
-    buttons.lButton,
-    buttons.bpmfSemicolonButton,
-  ],
-  [
-    buttons.zButton,
-    buttons.xButton,
-    buttons.cButton,
-    buttons.vButton,
-    buttons.bButton,
-    buttons.nButton,
-    buttons.mButton,
-    buttons.bpmfCommaButton,
-    buttons.bpmfPeriodButton,
-    buttons.bpmfSlashButton,
-    commonButtons.backspaceButton,
-  ],
-  [
-    commonButtons.numericButton,
-    buttons.commaButton,
-    buttons.spaceButton,
-    commonButtons.alphabeticButton,
-    buttons.enterButton,
-  ],
-];
+};
 
 local getAlphabeticButtonSize(name) =
   local extra = {
@@ -106,14 +127,12 @@ local getAlphabeticButtonSize(name) =
     portraitNormalButtonSize
   );
 
-
 local newKeyLayout(isDark=false, isPortrait=true) =
-  local rows = getRows;
   {
     keyboardHeight: if isPortrait then commonButtons.keyboardHeight.portrait else commonButtons.keyboardHeight.landscape,
     keyboardStyle: utils.newBackgroundStyle(style=basicStyle.keyboardBackgroundStyleName),
   }
-  + utils.newRowKeyboardLayout(rows)
+  + keyboardLayout
 
   // letter Buttons
   + std.foldl(function(acc, button)

@@ -7,42 +7,59 @@ local preedit = import 'Preedit.libsonnet';
 local toolbar = import 'Toolbar.libsonnet';
 local utils = import 'Utils.libsonnet';
 
-// 18键布局
-local rows = [
-  [
-    buttons.qButton,
-    buttons.wButton,
-    buttons.rButton,
-    buttons.yButton,
-    buttons.uButton,
-    buttons.iButton,
-    buttons.pButton,
+local keyboardLayout = {
+  keyboardLayout: [
+    {
+      HStack: {
+        subviews: [
+          { Cell: buttons.qButton.name },
+          { Cell: buttons.wButton.name },
+          { Cell: buttons.rButton.name },
+          { Cell: buttons.yButton.name },
+          { Cell: buttons.uButton.name },
+          { Cell: buttons.iButton.name },
+          { Cell: buttons.pButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: buttons.aButton.name },
+          { Cell: buttons.sButton.name },
+          { Cell: buttons.fButton.name },
+          { Cell: buttons.hButton.name },
+          { Cell: buttons.jButton.name },
+          { Cell: buttons.lButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: commonButtons.shiftButton.name },
+          { Cell: buttons.zButton.name },
+          { Cell: buttons.xButton.name },
+          { Cell: buttons.vButton.name },
+          { Cell: buttons.bButton.name },
+          { Cell: buttons.mButton.name },
+          { Cell: commonButtons.backspaceButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: commonButtons.numericButton.name },
+          { Cell: commonButtons.commaButton.name },
+          { Cell: commonButtons.spaceButton.name },
+          { Cell: commonButtons.alphabeticButton.name },
+          { Cell: commonButtons.enterButton.name },
+        ],
+      },
+    },
   ],
-  [
-    buttons.aButton,
-    buttons.sButton,
-    buttons.fButton,
-    buttons.hButton,
-    buttons.jButton,
-    buttons.lButton,
-  ],
-  [
-    commonButtons.shiftButton,
-    buttons.zButton,
-    buttons.xButton,
-    buttons.vButton,
-    buttons.bButton,
-    buttons.mButton,
-    commonButtons.backspaceButton,
-  ],
-  [
-    commonButtons.numericButton,
-    commonButtons.commaButton,
-    commonButtons.spaceButton,
-    commonButtons.alphabeticButton,
-    commonButtons.enterButton,
-  ],
-];
+};
 
 local getAlphabeticButtonSize(name) =
   local extra = {
@@ -66,13 +83,12 @@ local getAlphabeticButtonSize(name) =
     {}
   );
 
-
 local newKeyLayout(isDark=false, isPortrait=true) =
   {
     keyboardHeight: if isPortrait then commonButtons.keyboardHeight.portrait else commonButtons.keyboardHeight.landscape,
     keyboardStyle: utils.newBackgroundStyle(style=basicStyle.keyboardBackgroundStyleName),
   }
-  + utils.newRowKeyboardLayout(rows)
+  + keyboardLayout
 
   // letter Buttons
   + std.foldl(function(acc, button)

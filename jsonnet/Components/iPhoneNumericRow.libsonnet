@@ -18,51 +18,68 @@ local KeyboardType = {
   English: 1,
 };
 
-// 布局
-local numericRows = [
-  [
-    numericButtons.oneButton,
-    numericButtons.twoButton,
-    numericButtons.threeButton,
-    numericButtons.fourButton,
-    numericButtons.fiveButton,
-    numericButtons.sixButton,
-    numericButtons.sevenButton,
-    numericButtons.eightButton,
-    numericButtons.nineButton,
-    numericButtons.zeroButton,
+local keyboardLayout = {
+  keyboardLayout: [
+    {
+      HStack: {
+        subviews: [
+          { Cell: numericButtons.oneButton.name },
+          { Cell: numericButtons.twoButton.name },
+          { Cell: numericButtons.threeButton.name },
+          { Cell: numericButtons.fourButton.name },
+          { Cell: numericButtons.fiveButton.name },
+          { Cell: numericButtons.sixButton.name },
+          { Cell: numericButtons.sevenButton.name },
+          { Cell: numericButtons.eightButton.name },
+          { Cell: numericButtons.nineButton.name },
+          { Cell: numericButtons.zeroButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: numericButtons.hyphenButton.name },
+          { Cell: numericButtons.forwardSlashButton.name },
+          { Cell: numericButtons.colonButton.name },
+          { Cell: numericButtons.semicolonButton.name },
+          { Cell: numericButtons.leftParenthesisButton.name },
+          { Cell: numericButtons.rightParenthesisButton.name },
+          { Cell: numericButtons.moneyButton.name },
+          { Cell: numericButtons.atButton.name },
+          { Cell: numericButtons.leftCurlyQuoteButton.name },
+          { Cell: numericButtons.rightCurlyQuoteButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: commonButtons.symbolicButton.name },
+          { Cell: numericButtons.plusButton.name },
+          { Cell: numericButtons.asteriskButton.name },
+          { Cell: numericButtons.ideographicCommaButton.name },
+          { Cell: numericButtons.hashButton.name },
+          { Cell: numericButtons.questionMarkButton.name },
+          { Cell: numericButtons.exclamationMarkButton.name },
+          { Cell: numericButtons.dotButton.name },
+          { Cell: commonButtons.backspaceButton.name },
+        ],
+      },
+    },
+    {
+      HStack: {
+        subviews: [
+          { Cell: commonButtons.gotoPrimaryKeyboardButton.name },
+          { Cell: numericButtons.chinesePeriodButton.name },
+          { Cell: numericButtons.numericSpaceButton.name },
+          { Cell: numericButtons.numericEqualButton.name },
+          { Cell: commonButtons.enterButton.name },
+        ],
+      },
+    },
   ],
-  [
-    numericButtons.hyphenButton,
-    numericButtons.forwardSlashButton,
-    numericButtons.colonButton,
-    numericButtons.semicolonButton,
-    numericButtons.leftParenthesisButton,
-    numericButtons.rightParenthesisButton,
-    numericButtons.moneyButton,
-    numericButtons.atButton,
-    numericButtons.leftCurlyQuoteButton,
-    numericButtons.rightCurlyQuoteButton,
-  ],
-  [
-    commonButtons.symbolicButton,
-    numericButtons.plusButton,
-    numericButtons.asteriskButton,
-    numericButtons.ideographicCommaButton,
-    numericButtons.hashButton,
-    numericButtons.questionMarkButton,
-    numericButtons.exclamationMarkButton,
-    numericButtons.dotButton,
-    commonButtons.backspaceButton,
-  ],
-  [
-    commonButtons.gotoPrimaryKeyboardButton,
-    numericButtons.chinesePeriodButton,
-    numericButtons.numericSpaceButton,
-    numericButtons.numericEqualButton,
-    commonButtons.enterButton,
-  ],
-];
+};
 
 local getButtonSize(name) =
   local extra = {
@@ -89,14 +106,13 @@ local getButtonSize(name) =
     {}
   );
 
-
 local newKeyLayout(isDark=false, isPortrait=false, keyboardType=KeyboardType.Chinese) =
   local isAlphabetic = keyboardType == KeyboardType.English;
   {
     keyboardHeight: if isPortrait then commonButtons.keyboardHeight.portrait else commonButtons.keyboardHeight.landscape,
     keyboardStyle: utils.newBackgroundStyle(style=basicStyle.keyboardBackgroundStyleName),
   }
-  + utils.newRowKeyboardLayout(numericRows)
+  + keyboardLayout
   // number Buttons
   + std.foldl(
     function(acc, button) acc +
