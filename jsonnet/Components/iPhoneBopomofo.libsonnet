@@ -117,7 +117,7 @@ local getAlphabeticButtonSize(name) =
       size:
         { width: '4/33' },
       bounds:
-        { width: '4/5', alignment: 'left' },
+        { width: '3/4', alignment: 'left' },
     },
   };
   (
