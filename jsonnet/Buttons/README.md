@@ -14,6 +14,7 @@
 - Layout26：26 键中文和英文键盘。
 - LayoutNumeric：数字键盘。
 - LayoutBopomofo：注音键盘。
+- LayoutSigma: 西戈码键盘。
 - Toolbar：工具栏和浮动面板中的按键。
 
 按键的具体配置语法可以参考后面的「按键语法说明」部分。
